@@ -1,0 +1,18 @@
+{
+  "sites": [
+    {
+      "key": "demo_api",
+      "name": "示例 API 站点",
+      "type": 1,
+      "api": "https://example.invalid/api.php/provide/vod/",
+      "searchable": 1,
+      "quickSearch": 1,
+      "filterable": 1,
+      "changeable": 1,
+      "timeout": 15
+    }
+  ],
+  "parses": [],
+  "flags": [],
+  "ads": []
+}
