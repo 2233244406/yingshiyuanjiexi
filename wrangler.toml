@@ -1,3 +1,0 @@
-name = "webhometv-site-list-proxy"
-main = "worker/worker.js"
-compatibility_date = "2026-11-07"
