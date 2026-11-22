@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark light"><meta name="theme-color" content="#0b1020"><meta name="description" content="WebHomeTV 站点配置、接口测试、解析历史和坚果云跨设备同步工具"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="站点列表"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icons/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="./icons/icon-192.png"><title>WebHomeTV 站点列表</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--line:#293754;--text:#edf3ff;--muted:#9aabc7;--accent:#70a5ff;--good:#54d6a0;--bad:#ff8585;--warn:#ffd27a}*{box-sizing:border-box}body{margin:0;background:radial-gradient(1000px 500px at 10% -10%,#1d3158 0,transparent 60%),var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}.wrap{max-width:1240px;margin:auto;padding:28px 20px 60px}.head{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-bottom:22px}.brand{display:flex;gap:14px;align-items:center}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#6ea7ff,#8c7bff);display:grid;place-items:center;font-size:24px;color:#071126;font-weight:900}.head h1{font-size:23px;margin:0}.sub{color:var(--muted);font-size:13px}.pill{border:1px solid var(--line);border-radius:99px;padding:6px 11px;color:var(--muted);font-size:12px}.grid{display:grid;grid-template-columns:370px 1fr;gap:18px}.panel{background:linear-gradient(180deg,#151f34,#111a2b);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 12px 32px #0002}.panel h2{font-size:16px;margin:0 0 12px}.panel p{margin:4px 0 12px;color:var(--muted);font-size:13px}.field{margin:12px 0}.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}input,textarea,select{width:100%;background:#0c1425;border:1px solid #344562;color:var(--text);border-radius:9px;padding:10px 11px;font:inherit;outline:none}textarea{min-height:120px;resize:vertical}input:focus,textarea:focus{border-color:var(--accent)}button,.filebtn{border:1px solid #405578;background:#1b2a46;color:var(--text);border-radius:9px;padding:9px 12px;cursor:pointer;font:inherit;font-size:13px}button:hover,.filebtn:hover{border-color:var(--accent);background:#23385d}button.primary{background:#477fe0;border-color:#6297f0;color:white}button:disabled{opacity:.5;cursor:wait}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.filebtn{display:inline-flex;align-items:center;justify-content:center;min-width:110px}input[type=file]{display:none}.hint{font-size:12px;color:var(--muted);margin-top:7px}.status{margin-top:12px;padding:10px 12px;border-radius:9px;background:#0c1425;border:1px solid var(--line);font-size:13px;color:var(--muted);white-space:pre-wrap;overflow-wrap:anywhere}.status.good{color:var(--good)}.status.bad{color:var(--bad)}.stats{display:flex;gap:10px;margin-bottom:14px}.stat{flex:1;background:#0d1729;border:1px solid var(--line);padding:12px;border-radius:11px}.stat b{display:block;font-size:22px}.stat span{font-size:12px;color:var(--muted)}.toolbar{display:grid;grid-template-columns:1fr 150px 130px;gap:8px;margin-bottom:12px}.list{display:grid;gap:9px}.site{background:#0e1729;border:1px solid #283954;border-radius:12px;padding:13px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px}.site h3{font-size:15px;margin:0 0 3px;overflow-wrap:anywhere}.meta{color:var(--muted);font-size:12px;overflow-wrap:anywhere}.api{font-size:12px;color:#9dbdff;overflow-wrap:anywhere;margin-top:7px}.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.tag{font-size:11px;padding:2px 7px;border-radius:99px;border:1px solid #354967;color:#b9c9e3}.actions{display:flex;gap:6px;align-items:center;justify-content:flex-end;flex-wrap:wrap;max-width:220px}.actions button{padding:6px 9px;font-size:12px}.empty{padding:35px 15px;text-align:center;color:var(--muted);border:1px dashed #40506a;border-radius:12px}.advanced{border-top:1px solid var(--line);margin-top:16px;padding-top:12px}.advanced summary{cursor:pointer;color:#c8d8f2;font-size:13px}.footer{margin-top:18px;color:var(--muted);font-size:12px;text-align:center}.mini{font-size:11px;color:var(--muted)}@media(max-width:900px){.grid{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}.head{align-items:flex-start;flex-direction:column}}@media(max-width:560px){.wrap{padding:18px 12px}.site{grid-template-columns:1fr}.actions{max-width:none;justify-content:flex-start}.stats{gap:6px}.stat{padding:9px}.stat b{font-size:19px}}
+
+.install-btn{white-space:nowrap;background:#477fe0;border-color:#6297f0;color:#fff}.install-btn[hidden]{display:none}
+.install-help{margin:0 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:#0d1729;color:var(--muted);font-size:13px}
+.install-help summary{cursor:pointer;color:#c8d8f2;font-weight:600}
+.site,.site>div:first-child{min-width:0}button,.filebtn{min-height:42px;touch-action:manipulation}
+input,textarea,select{font-size:16px;min-height:44px}
+@media(max-width:560px){
+.wrap{padding:12px 10px 28px}.head{gap:12px;margin-bottom:14px}.brand{gap:10px}.logo{width:42px;height:42px;border-radius:13px}
+.head h1{font-size:19px}.sub{font-size:12px}.head-actions{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.panel{padding:13px;border-radius:13px}.grid{gap:12px}.toolbar{grid-template-columns:1fr 1fr;gap:7px}.toolbar input{grid-column:1/-1}
+.row{gap:7px}.row>*{min-width:calc(50% - 4px)}.site{padding:12px;gap:9px}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%;gap:7px}
+.actions button{min-height:42px;font-size:13px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.stat{padding:8px 7px}.stat b{font-size:18px}.stat span{font-size:11px}.api{word-break:break-all}.footer{padding:0 8px}
+}
+@media(display-mode:standalone){.head{padding-top:env(safe-area-inset-top)}.wrap{padding-bottom:calc(28px + env(safe-area-inset-bottom))}}
+
+/* 本地缓存与数据管理 */
+.storage-panel{margin-top:14px}
+.storage-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.storage-toolbar button{flex:0 1 auto}
+.storage-list{display:grid;gap:8px;margin-top:12px}
+.storage-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;background:#0e1729;border:1px solid #283954;border-radius:10px;padding:11px 12px}
+.storage-item.protected{border-style:dashed;border-color:#79643c}
+.storage-item-main{display:flex;gap:10px;align-items:flex-start;min-width:0}
+.storage-item input[type=checkbox]{width:19px;height:19px;min-height:19px;flex:0 0 19px;margin:3px 0 0;accent-color:#70a5ff}
+.storage-item-title{font-size:13px;font-weight:650;overflow-wrap:anywhere}
+.storage-item-detail{font-size:11px;color:var(--muted);overflow-wrap:anywhere;margin-top:3px}
+.storage-item-size{font-size:12px;color:#c5d7f4;white-space:nowrap;text-align:right}
+.storage-tag{display:inline-block;font-size:10px;padding:1px 6px;border:1px solid #79643c;color:#ffd27a;border-radius:99px;margin-left:5px}
+.storage-summary{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.storage-summary span{font-size:12px;color:var(--muted);background:#0d1729;border:1px solid var(--line);border-radius:8px;padding:6px 9px}
+.storage-note{font-size:12px;color:var(--muted);line-height:1.6}
+.storage-item input:disabled{opacity:.5}
+@media(max-width:560px){
+.storage-item{grid-template-columns:minmax(0,1fr);gap:5px}
+.storage-item-size{text-align:left;padding-left:29px}
+.storage-toolbar button{flex:1 1 calc(50% - 5px)}
+}
+
+
+/* 手动链接下载 */
+.manual-download{margin-top:14px}
+.manual-download textarea{min-height:96px}
+.download-progress{width:100%;height:10px;accent-color:#70a5ff;margin-top:8px}
+.download-help{font-size:12px;color:var(--muted);line-height:1.6;margin-top:8px}
+.download-result{max-height:220px;overflow:auto}
+
+
+/* 解析历史与坚果云同步 */
+.history-panel,.sync-panel{margin-top:14px}
+.history-toolbar,.sync-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.history-toolbar button,.sync-toolbar button{flex:0 1 auto}
+.history-list{display:grid;gap:8px;margin-top:12px}
+.history-item{background:#0e1729;border:1px solid #283954;border-radius:10px;padding:11px 12px;display:grid;gap:5px}
+.history-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.history-title{font-weight:650;overflow-wrap:anywhere}
+.history-meta,.history-detail{font-size:12px;color:var(--muted);overflow-wrap:anywhere;white-space:pre-wrap}
+.history-ok{color:var(--good)}.history-fail{color:var(--bad)}
+.sync-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sync-grid .field{margin:6px 0}
+.sync-status{white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:560px){.sync-grid{grid-template-columns:1fr}.history-toolbar button,.sync-toolbar button{flex:1 1 calc(50% - 5px)}}
+</style></head>
+<body><div class="wrap">
+<header class="head"><div class="brand"><div class="logo">W</div><div><h1>WebHomeTV · 站点列表</h1><div class="sub">手机 / 电脑均可使用 · 可添加到主屏幕</div></div></div>
+<div class="head-actions"><span class="pill">PWA · v1.5.1</span><button id="installApp" class="install-btn" hidden>安装到手机</button></div></header>
+<details class="install-help" id="installHelp"><summary>如何添加到手机桌面？</summary>
+<div style="margin-top:8px">安卓 Chrome / Edge：打开 HTTPS 网页后点击“安装到手机”；若没有按钮，打开浏览器右上角菜单，选择“安装应用”或“添加到主屏幕”。<br>
+iPhone / iPad：使用 Safari 打开网页，点击底部“分享”，选择“添加到主屏幕”。<br>首次联网打开后会缓存网页外壳；断网时可重新打开界面，但远程站点请求仍需要网络。</div></details>
+<div class="grid">
+<aside class="panel">
+<h2>导入站点配置</h2><p>支持 WebHomeTV / CatVod 常见配置 JSON，读取其中的 <code>sites</code> 数组。</p>
+<div class="field"><label>配置文件 URL</label><input id="configUrl" placeholder="https://example.com/config.json"><div class="hint">可填写远程 JSON 配置地址。相对 API 地址会以此 URL 为基准补全。</div></div>
+<div class="row"><button class="primary" id="fetchUrl">获取远程配置</button><label class="filebtn" for="file">选择 JSON 文件</label><input id="file" type="file" accept=".json,application/json"></div>
+<div class="field"><label>或者粘贴 JSON 配置</label><textarea id="jsonInput" placeholder='{"sites":[{"key":"demo","name":"示例站点","type":1,"api":"https://example.com/api.php"}]}'></textarea></div>
+<div class="row"><button id="parseJson" class="primary">解析配置</button><button id="clearAll">清空</button></div>
+<div id="status" class="status">等待导入配置。你也可以先使用右侧的示例数据熟悉界面。</div>
+<section class="advanced manual-download" aria-labelledby="manualDownloadTitle">
+<h2 id="manualDownloadTitle">手动添加链接下载</h2>
+<p>粘贴文件直链即可下载，不需要先导入站点配置。配置了 Cloudflare Worker 时会优先通过 Worker 请求。</p>
+<div class="field"><label for="manualUrl">单个文件下载链接</label><input id="manualUrl" type="url" inputmode="url" placeholder="https://example.com/files/source.py"></div>
+<div class="field"><label for="manualFilename">保存文件名（可选）</label><input id="manualFilename" placeholder="留空时自动从链接或响应头识别文件名"></div>
+<div class="row"><button id="manualDownload" class="primary">下载此文件</button><button id="clearManual">清空</button></div>
+<div class="field"><label for="batchUrls">批量下载链接（每行一个 URL）</label><textarea id="batchUrls" placeholder="https://example.com/a.py&#10;https://example.com/b.json&#10;https://example.com/c.zip"></textarea></div>
+<div class="row"><button id="batchDownload" class="primary">开始批量下载</button><button id="clearBatch">清空批量列表</button></div>
+<progress id="downloadProgress" class="download-progress" max="100" value="0" hidden></progress>
+<div id="downloadResult" class="status download-result">等待添加下载链接。</div>
+<div class="download-help">支持 HTTP / HTTPS 文件直链。批量下载将逐个请求并触发浏览器下载；浏览器可能询问是否允许多个文件下载。大文件会暂存在浏览器内存中，建议优先使用稳定的直链。遇到 CORS 时请配置本页的 Cloudflare Worker；Worker 不能绕过登录、验证码、权限校验或防盗链。</div>
+</section>
+<details class="advanced"><summary>网络请求设置（解决 UA / Referer / Cookie / CORS）</summary>
+<div class="field"><label>Cloudflare Worker 代理地址（可选）</label><input id="workerUrl" placeholder="https://your-worker.yourname.workers.dev"></div>
+<div class="field"><label>代理访问令牌（可选，按 Worker 设置填写）</label><input id="workerToken" type="password" placeholder="PROXY_TOKEN"></div>
+<div class="field"><label>默认 User-Agent</label><input id="ua" value="Mozilla/5.0 WebHomeTV-Windows/0.2"></div>
+<div class="field"><label>默认 Referer（可选）</label><input id="referer" placeholder="https://站点域名/"></div>
+<div class="field"><label>默认 Cookie（可选）</label><textarea id="cookie" style="min-height:65px" placeholder="name=value; other=value"></textarea></div>
+<div class="hint">站点自身 header 优先级高于默认设置。浏览器直连不能设置 User-Agent / Cookie 等受限请求头；需要完整请求头时请部署随附 Worker。</div>
+<div class="row" style="margin-top:10px"><button id="saveNet">保存请求设置</button><button id="testWorker">测试代理连接</button></div>
+</details>
+<div class="advanced"><h2>配置说明</h2><p>• type=0：XML API；1：JSON API；2：JSON 兼容；3：Spider；4：HTTP API + Base64 ext。</p><p>• type=3 的 api 通常是 Spider 脚本文件，不一定是可直接打开的网页。</p><p>• 该工具只提取站点配置，不执行 Python / Java / JS Spider 脚本。</p></div>
+</aside>
+<main>
+<div class="stats"><div class="stat"><b id="total">0</b><span>站点总数</span></div><div class="stat"><b id="searchable">0</b><span>可搜索站点</span></div><div class="stat"><b id="types">0</b><span>接口类型</span></div></div>
+<section class="panel"><div class="toolbar"><input id="search" placeholder="搜索站点名称、key、API 地址…"><select id="typeFilter"><option value="">全部类型</option><option value="0">XML API</option><option value="1">JSON API</option><option value="2">JSON API 兼容</option><option value="3">Spider</option><option value="4">HTTP API + Base64</option><option value="other">其他 / 未知</option></select><select id="searchFilter"><option value="">全部搜索状态</option><option value="yes">可搜索</option><option value="no">不可搜索</option></select></div>
+<div class="row" style="margin-bottom:12px"><button id="exportJson">导出站点 JSON</button><button id="exportCsv">导出 CSV</button><button id="loadDemo">载入示例</button></div>
+<div id="siteList" class="list"><div class="empty">尚未导入配置。请从左侧选择 JSON 文件、粘贴配置或输入配置 URL。</div></div>
+</section>
+<section class="panel" style="margin-top:14px"><h2>请求 / 测试结果</h2><p>选中站点后可测试 API 连通性。请求将优先尝试 Worker 代理；未配置代理时使用浏览器直连（目标站点必须允许 CORS）。</p><div id="result" class="status">尚无请求记录。</div></section>
+</main></div>
+<section class="panel history-panel" aria-labelledby="historyTitle">
+  <h2 id="historyTitle">解析历史记录</h2>
+  <p>自动记录配置解析、远程配置获取、站点 API 测试和下载操作。记录保存在当前设备，可通过坚果云与其他设备合并同步。</p>
+  <div class="toolbar" style="grid-template-columns:1fr 150px">
+    <input id="historySearch" placeholder="搜索站点、配置来源、URL 或错误信息…">
+    <select id="historyFilter"><option value="">全部记录</option><option value="success">成功</option><option value="failed">失败</option><option value="config">配置解析</option><option value="api">API 测试</option><option value="download">下载</option></select>
+  </div>
+  <div class="history-toolbar">
+    <button id="exportHistory">导出历史记录</button><button id="clearHistory">清空历史记录</button>
+  </div>
+  <div id="historySummary" class="storage-summary"><span>暂无历史记录</span></div>
+  <div id="historyList" class="history-list"><div class="empty">尚无记录。导入配置或测试站点 API 后会自动生成历史。</div></div>
+</section>
+<section class="panel sync-panel" aria-labelledby="syncTitle">
+  <h2 id="syncTitle">坚果云跨设备配置同步</h2>
+  <p>使用坚果云 WebDAV 保存加密同步文件。电脑和手机的解析历史自动合并；配置同时发生修改时会询问你，不会静默覆盖。</p>
+  <div class="sync-grid">
+    <div class="field"><label for="nutstoreUrl">WebDAV 地址</label><input id="nutstoreUrl" value="https://dav.jianguoyun.com/dav/" autocomplete="url"></div>
+    <div class="field"><label for="nutstoreUser">坚果云账号（注册邮箱）</label><input id="nutstoreUser" type="email" autocomplete="username" placeholder="name@example.com"></div>
+    <div class="field"><label for="nutstorePass">第三方应用密码</label><input id="nutstorePass" type="password" autocomplete="new-password" placeholder="在坚果云安全选项中生成"></div>
+    <div class="field"><label for="syncMaster">同步主密码（自行设置，电脑和手机必须相同）</label><input id="syncMaster" type="password" autocomplete="new-password" placeholder="至少 6 位；用于加密云端文件"></div>
+  </div>
+  <div class="sync-grid">
+    <div class="field"><label for="syncDir">坚果云同步目录（相对于 WebDAV 根目录）</label><input id="syncDir" value="WebHomeTV" placeholder="例如：WebHomeTV 或备份/站点列表"><small class="hint">目录不存在时，Worker 会自动逐级创建；支持多级目录，电脑和手机必须填写相同路径。</small></div>
+    <div class="field"><label for="syncFile">云端同步文件名</label><input id="syncFile" value="WebHomeTV-sync-v1.json"></div>
+  </div>
+  <div class="sync-grid">
+    <div class="field"><label for="syncInterval">自动同步间隔</label><select id="syncInterval"><option value="24">24 小时（默认）</option><option value="1">1 小时</option><option value="6">6 小时</option><option value="12">12 小时</option><option value="48">48 小时</option><option value="168">7 天</option></select></div>
+    <div class="field"><label>自动同步</label><label style="display:flex;align-items:center;gap:9px;color:var(--text)"><input id="syncAuto" type="checkbox" checked style="width:20px;min-height:20px">启用（页面打开时检查到期任务）</label></div>
+  </div>
+  <div class="hint">需要先在坚果云「账户信息 → 安全选项 → 第三方应用管理」生成应用密码。同步主密码不是坚果云密码；请在电脑和手机使用同一主密码。应用密码会使用同步主密码加密保存在本设备；云端同步文件使用 AES-GCM 加密。首次设置后本设备可自动解锁密钥，以支持到期自动同步。</div>
+  <div class="sync-toolbar">
+    <button id="testNutstore">测试坚果云连接</button><button id="saveSyncSettings">保存同步设置</button><button id="syncNow" class="primary">立即双向同步</button>
+    <button id="uploadSync">仅上传本机</button><button id="downloadSync">仅下载云端</button>
+  </div>
+  <div id="syncStatus" class="status sync-status">尚未连接坚果云。请先填写账号、第三方应用密码、同步主密码和 Worker 地址。</div>
+  <div class="hint">自动同步说明：静态 PWA 在浏览器关闭或手机系统休眠期间无法保证准时运行；重新打开页面后会检查是否到期并补同步。坚果云账号密码通过你自己的 Cloudflare Worker 转发到坚果云，Worker 不保存这些凭据。</div>
+</section>
+<section class="panel storage-panel" aria-labelledby="storageTitle">
+  <h2 id="storageTitle">缓存与本地数据管理</h2>
+  <p>检测当前网站来源下实际存在的浏览器缓存和本地数据。每项可单独勾选；配置类数据默认保护且不勾选。</p>
+  <div class="storage-toolbar">
+    <button id="scanStorage" class="primary">检测可清理数据</button>
+    <button id="selectAllStorage">全选</button>
+    <button id="unselectAllStorage">取消全选</button>
+    <button id="clearSelectedStorage">清除所选项目</button>
+  </div>
+  <div class="storage-summary" id="storageSummary">
+    <span>尚未检测</span>
+  </div>
+  <div class="storage-note" style="margin-top:9px">
+    默认保护：Worker 地址、Token、UA、Referer、Cookie 等配置。点击“全选”会明确勾选这些受保护项目；清除前还会再次列出所有待删除项供确认。
+    缓存与数据库大小为浏览器可读取范围内的估算值；部分跨域/不透明响应或复杂 IndexedDB 数据可能无法准确估算。
+  </div>
+  <div id="storageList" class="storage-list">
+    <div class="empty">点击“检测可清理数据”开始扫描。</div>
+  </div>
+  <div id="storageResult" class="status">检测结果尚未生成。清理操作只作用于当前网页来源，不会清理其他网站的数据。</div>
+</section>
+
+<div class="footer">独立提取自 WebHomeTV Windows v0.20.0 站点列表功能 · 默认仅在本机保存数据；启用坚果云同步后，会将加密数据保存到你的坚果云。</div></div>
+<script>
+(()=>{'use strict';
+const $=s=>document.querySelector(s);let sites=[],configBase='',lastConfig=null;
+const typeNames={0:'XML API',1:'JSON API',2:'JSON API 兼容',3:'Spider',4:'HTTP API + Base64 ext'};
+function setStatus(t,kind=''){const e=$('#status');e.textContent=t;e.className='status '+kind}
+function setResult(t,kind=''){const e=$('#result');e.textContent=t;e.className='status '+kind}
+function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function normalizePayload(obj){if(Array.isArray(obj))return {sites:obj};if(obj&&typeof obj==='object'){if(Array.isArray(obj.sites))return obj;if(obj.config&&Array.isArray(obj.config.sites))return obj.config;if(obj.data&&Array.isArray(obj.data.sites))return obj.data;}throw Error('没有找到 sites 数组。请确认导入的是 WebHomeTV / CatVod 配置 JSON。')}
+function resolveApi(api){try{return new URL(String(api||''),configBase||location.href).href}catch{return String(api||'')}}
+function importObject(obj,base=''){const payload=normalizePayload(obj);configBase=base||'';lastConfig=payload;sites=payload.sites.map((s,i)=>({...s,__index:i,__api:resolveApi(s.api)}));render();setStatus(`解析成功：识别到 ${sites.length} 个站点。${base?'配置来源：'+base:'来源：本地 JSON'}`,'good');addHistory('config','success','配置解析成功',`识别到 ${sites.length} 个站点；来源：${base||'本地 JSON'}`,base||'')}
+function typeOf(s){const n=Number(s.type??-1);return typeNames[n]||'未知类型'}
+function filtered(){const q=$('#search').value.trim().toLowerCase(),t=$('#typeFilter').value,f=$('#searchFilter').value;return sites.filter(s=>{const hay=[s.name,s.key,s.api,s.__api,s.type].join(' ').toLowerCase();const n=Number(s.type??-1);return(!q||hay.includes(q))&&(!t||(t==='other'?!typeNames[n]:String(n)===t))&&(!f||(f==='yes'?Number(s.searchable??1)!==0:Number(s.searchable??1)===0))})}
+function render(){const arr=filtered();$('#total').textContent=sites.length;$('#searchable').textContent=sites.filter(s=>Number(s.searchable??1)!==0).length;$('#types').textContent=new Set(sites.map(s=>String(s.type??'未知'))).size;const root=$('#siteList');if(!arr.length){root.innerHTML='<div class="empty">没有匹配的站点</div>';return}root.innerHTML=arr.map(s=>{const headers=s.header&&typeof s.header==='object'?Object.keys(s.header).join(', '):'';return `<article class="site"><div><h3>${esc(s.name||s.key||'未命名站点')}</h3><div class="meta">key：${esc(s.key||'—')}　·　type：${esc(s.type??'—')}　·　${esc(typeOf(s))}</div><div class="api">API：${esc(s.__api||s.api||'未设置')}</div><div class="tags"><span class="tag">${Number(s.searchable??1)!==0?'可搜索':'搜索关闭'}</span>${s.quickSearch?'<span class="tag">快速搜索</span>':''}${s.filterable?'<span class="tag">筛选</span>':''}${headers?`<span class="tag">自定义请求头：${esc(headers)}</span>`:''}${s.ext?'<span class="tag">含 ext</span>':''}</div></div><div class="actions"><button data-act="test" data-i="${s.__index}">测试 API</button><button data-act="copy" data-i="${s.__index}">复制地址</button><button data-act="open" data-i="${s.__index}">打开</button><button data-act="download" data-i="${s.__index}">下载文件</button></div></article>`}).join('')}
+async function requestProxy(url,headers={},method='GET'){const worker=$('#workerUrl').value.trim().replace(/\/$/,'');if(!worker)throw Error('未配置 Worker');const token=$('#workerToken').value.trim();const res=await fetch(worker+'/fetch',{method:'POST',headers:{'Content-Type':'application/json',...(token?{'X-Proxy-Token':token}:{})},body:JSON.stringify({url,method,headers})});if(!res.ok){let msg=res.status+' '+res.statusText;try{const j=await res.json();msg=j.error||msg}catch{}throw Error('Worker：'+msg)}return res}
+function headersFor(site){const h={'User-Agent':$('#ua').value.trim()||'Mozilla/5.0 WebHomeTV-Windows/0.2'};const referer=$('#referer').value.trim();const cookie=$('#cookie').value.trim();if(referer)h.Referer=referer;if(cookie)h.Cookie=cookie;if(site.header&&typeof site.header==='object')Object.assign(h,site.header);return h}
+function browserSafeHeaders(headers={}){const safe={};for(const [k,v] of Object.entries(headers)){if(['accept','accept-language','content-type'].includes(k.toLowerCase()))safe[k]=v}return safe}
+async function fetchText(url,headers={}){const worker=$('#workerUrl').value.trim();if(worker){const r=await requestProxy(url,headers);return {text:await r.text(),status:r.status,contentType:r.headers.get('content-type')||''}}const r=await fetch(url,{headers:browserSafeHeaders(headers),credentials:'omit'});if(!r.ok)throw Error('HTTP '+r.status+' '+r.statusText);return {text:await r.text(),status:r.status,contentType:r.headers.get('content-type')||''}}
+function downloadStatus(message,kind=''){const el=$('#downloadResult');el.textContent=message;el.className='status download-result '+kind}
+function safeDownloadName(value){let name=String(value||'').replace(/[\\/:*?"<>|\x00-\x1f]/g,'_').replace(/[. ]+$/,'').trim();if(!name||name==='.'||name==='..')name='download.bin';return name.slice(0,180)}
+function filenameFromResponse(response,url){
+  const cd=response.headers.get('content-disposition')||'';
+  let match=cd.match(/filename\*\s*=\s*UTF-8''([^;]+)/i);
+  if(match){try{return safeDownloadName(decodeURIComponent(match[1].trim().replace(/^"|"$/g,'')))}catch{}}
+  match=cd.match(/filename\s*=\s*(?:"([^"]+)"|([^;]+))/i);
+  if(match)return safeDownloadName((match[1]||match[2]||'').trim());
+  try{const path=new URL(url).pathname;const last=path.split('/').filter(Boolean).pop();if(last){try{return safeDownloadName(decodeURIComponent(last))}catch{return safeDownloadName(last)}}}catch{}
+  return 'download.bin';
+}
+async function fetchBinary(url){
+  const headers=headersFor({});
+  const worker=$('#workerUrl').value.trim();
+  let response;
+  if(worker)response=await requestProxy(url,headers,'GET');
+  else response=await fetch(url,{headers:browserSafeHeaders(headers),credentials:'omit'});
+  if(!response.ok)throw Error('HTTP '+response.status+' '+response.statusText);
+  const blob=await response.blob();
+  if(!blob.size)throw Error('服务器返回空文件（0 字节）');
+  return {blob,name:filenameFromResponse(response,url),size:blob.size,type:response.headers.get('content-type')||blob.type||'application/octet-stream'};
+}
+function triggerBlobDownload(blob,name){
+  const objectUrl=URL.createObjectURL(blob);const a=document.createElement('a');a.href=objectUrl;a.download=safeDownloadName(name);a.style.display='none';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
+}
+function parseDownloadUrls(text){const seen=new Set(),out=[];for(const raw of String(text||'').split(/\r?\n/)){const value=raw.trim();if(!value||value.startsWith('#'))continue;let url;try{url=new URL(value)}catch{throw Error('链接格式无效：'+value)}if(!['http:','https:'].includes(url.protocol))throw Error('只允许 HTTP/HTTPS 链接：'+value);if(!seen.has(url.href)){seen.add(url.href);out.push(url.href)}}return out}
+async function downloadOne(url,customName=''){
+  const file=await fetchBinary(url);const name=customName.trim()?safeDownloadName(customName):file.name;triggerBlobDownload(file.blob,name);return {name,size:file.size,url};
+}
+async function manualDownload(){
+  const url=$('#manualUrl').value.trim();if(!url)return downloadStatus('请先填写单个文件下载链接。','bad');
+  let valid;try{valid=parseDownloadUrls(url);if(valid.length!==1)throw Error('请填写一个有效的 HTTP/HTTPS 文件链接')}catch(e){return downloadStatus(e.message,'bad')}
+  const button=$('#manualDownload');button.disabled=true;downloadStatus('正在获取文件：'+valid[0]);
+  try{const result=await downloadOne(valid[0],$('#manualFilename').value);downloadStatus('下载已触发：'+result.name+'（'+formatBytes(result.size)+'）\n'+result.url,'good');addHistory('download','success','手动文件下载成功',`${result.name}；${formatBytes(result.size)}`,result.url)}
+  catch(e){downloadStatus('下载失败：'+e.message+'\n请检查链接、Worker 地址/Token、请求头以及目标站点是否要求登录或验证码。','bad');addHistory('download','failed','手动文件下载失败',e.message,valid[0])}
+  finally{button.disabled=false}
+}
+async function batchDownload(){
+  let urls;try{urls=parseDownloadUrls($('#batchUrls').value);if(!urls.length)throw Error('请先粘贴至少一个下载链接')}catch(e){return downloadStatus(e.message,'bad')}
+  const button=$('#batchDownload'),progress=$('#downloadProgress');button.disabled=true;progress.hidden=false;progress.value=0;
+  const lines=[],failed=[];downloadStatus('批量下载准备开始，共 '+urls.length+' 个链接。');
+  for(let i=0;i<urls.length;i++){
+    const url=urls[i];downloadStatus(`正在下载 ${i+1}/${urls.length}\n${url}\n已完成：${i}，失败：${failed.length}`);
+    try{const result=await downloadOne(url);lines.push(`✓ ${result.name}（${formatBytes(result.size)}）`)}
+    catch(e){failed.push(url+'：'+e.message);lines.push('✗ '+url+'：'+e.message)}
+    progress.value=Math.round((i+1)/urls.length*100);
+    downloadStatus(`批量下载进度：${i+1}/${urls.length}\n`+lines.join('\n')+(failed.length?'\n\n失败详情：\n'+failed.join('\n'):''));
+    if(i<urls.length-1)await new Promise(resolve=>setTimeout(resolve,650));
+  }
+  downloadStatus(`批量下载结束：成功 ${urls.length-failed.length} 个，失败 ${failed.length} 个。\n`+lines.join('\n')+(failed.length?'\n\n失败详情：\n'+failed.join('\n'):''),failed.length?'bad':'good');
+  button.disabled=false;
+}
+async function fetchConfigUrl(){const url=$('#configUrl').value.trim();if(!url)return setStatus('请先填写配置 URL。','bad');setStatus('正在获取远程配置…');try{const r=await fetchText(url,headersFor({}));let obj;try{obj=JSON.parse(r.text)}catch{throw Error('返回内容不是有效 JSON。可能是防盗链、登录页、验证码或接口返回 HTML。响应开头：'+r.text.slice(0,180))}importObject(obj,url)}catch(e){setStatus('获取失败：'+e.message+'\n\n如果提示 Failed to fetch / CORS，请部署随附的 Cloudflare Worker，并在网络请求设置中填写代理地址。若返回 403/HTML，请检查 UA、Referer、Cookie 或站点是否有验证码。','bad');addHistory('config','failed','远程配置获取失败',e.message,url)}}
+function parseText(){try{const obj=JSON.parse($('#jsonInput').value);importObject(obj,$('#configUrl').value.trim())}catch(e){setStatus('解析失败：'+e.message,'bad');addHistory('config','failed','配置解析失败',e.message,$('#configUrl').value.trim())}}
+function saveNet(){localStorage.setItem('whtv_worker',$('#workerUrl').value.trim());localStorage.setItem('whtv_token',$('#workerToken').value);localStorage.setItem('whtv_ua',$('#ua').value);localStorage.setItem('whtv_ref',$('#referer').value);localStorage.setItem('whtv_cookie',$('#cookie').value);setStatus('请求设置已保存在当前浏览器。Cookie 和令牌仅保存在本机浏览器 localStorage。','good')}
+function loadNet(){for(const [id,k] of [['workerUrl','whtv_worker'],['workerToken','whtv_token'],['ua','whtv_ua'],['referer','whtv_ref'],['cookie','whtv_cookie']]){const v=localStorage.getItem(k);if(v!==null)$('#'+id).value=v}}
+async function testWorker(){const w=$('#workerUrl').value.trim().replace(/\/$/,'');if(!w)return setStatus('请先填写 Worker 地址。','bad');try{const r=await fetch(w+'/health',{headers:$('#workerToken').value?{'X-Proxy-Token':$('#workerToken').value}:{}});const t=await r.text();setStatus('Worker 响应：'+r.status+'\n'+t,r.ok?'good':'bad')}catch(e){setStatus('代理连接失败：'+e.message,'bad')}}
+async function siteAction(i,act){const s=sites.find(x=>x.__index===i);if(!s)return;const url=s.__api||s.api;if(!url)return setResult('该站点没有 api 地址。','bad');if(act==='copy'){try{await navigator.clipboard.writeText(url);setResult('已复制 API 地址：\n'+url,'good')}catch{setResult(url)}return}if(act==='open'){window.open(url,'_blank','noopener');return}if(act==='download'){try{const r=await fetchText(url,headersFor(s));const blob=new Blob([r.text],{type:r.contentType||'application/octet-stream'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(s.name||s.key||'site')+'.txt';a.click();URL.revokeObjectURL(a.href);setResult('下载完成：'+url,'good')}catch(e){setResult('下载失败：'+e.message,'bad')}return}if(act==='test'){setResult('正在测试：'+url);try{const r=await fetchText(url,headersFor(s));let preview=r.text.slice(0,2500);let parsed='';try{const j=JSON.parse(r.text);parsed='\n\nJSON 解析：成功；顶层字段：'+Object.keys(j).join(', ')}catch{}setResult(`请求成功（HTTP ${r.status}）\nContent-Type：${r.contentType||'未知'}\n响应长度：${r.text.length} 字符${parsed}\n\n响应预览：\n${preview}`, 'good');addHistory('api','success','站点 API 测试成功',`站点：${s.name||s.key||'未命名'}；HTTP ${r.status}；响应 ${r.text.length} 字符`,url)}catch(e){setResult('请求失败：'+e.message+'\n\n如果浏览器直连失败但该站点在 WebHomeTV.exe 中可用，通常是 CORS 或请求头差异。请启用 Worker，并按站点要求设置 header。','bad');addHistory('api','failed','站点 API 测试失败',`站点：${s.name||s.key||'未命名'}；${e.message}`,url)}}}
+function exportFile(name,text,mime){const b=new Blob([text],{type:mime}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+function csvCell(x){return '"'+String(x??'').replace(/"/g,'""')+'"'}
+
+const HISTORY_KEY='whtv_parse_history';
+let historyRecords=[];
+function readHistory(){try{const v=JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]');historyRecords=Array.isArray(v)?v:[]}catch{historyRecords=[]}}
+function saveHistory(){localStorage.setItem(HISTORY_KEY,JSON.stringify(historyRecords.slice(0,500)))}
+function addHistory(type,status,title,detail='',url=''){
+  const record={id:(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2)),type,status,title:String(title||''),detail:String(detail||'').slice(0,4000),url:String(url||''),time:new Date().toISOString(),deviceId:getDeviceId()};
+  historyRecords.unshift(record);historyRecords=historyRecords.slice(0,500);saveHistory();renderHistory();return record;
+}
+function renderHistory(){
+  const q=($('#historySearch')?.value||'').trim().toLowerCase(),f=$('#historyFilter')?.value||'';
+  const filtered=historyRecords.filter(r=>(!f||(f==='success'||f==='failed'?r.status===f:r.type===f))&&(!q||[r.title,r.detail,r.url,r.type].join(' ').toLowerCase().includes(q)));
+  $('#historySummary').innerHTML=`<span>总记录 ${historyRecords.length} 条</span><span>当前显示 ${filtered.length} 条</span><span>成功 ${historyRecords.filter(r=>r.status==='success').length} 条</span><span>失败 ${historyRecords.filter(r=>r.status==='failed').length} 条</span>`;
+  const root=$('#historyList');if(!filtered.length){root.innerHTML='<div class="empty">没有匹配的历史记录。</div>';return}
+  root.innerHTML=filtered.slice(0,100).map(r=>`<article class="history-item"><div class="history-head"><span class="history-title">${esc(r.title||'未命名记录')}</span><span class="${r.status==='success'?'history-ok':'history-fail'}">${r.status==='success'?'成功':'失败'}</span></div><div class="history-meta">${esc(new Date(r.time).toLocaleString())} · ${esc(({config:'配置解析',api:'API 测试',download:'下载',sync:'同步'}[r.type]||r.type))}</div>${r.url?`<div class="history-meta">${esc(r.url)}</div>`:''}<div class="history-detail">${esc(r.detail)}</div><div class="row"><button data-history-delete="${esc(r.id)}">删除此条</button></div></article>`).join('');
+}
+function getDeviceId(){let id=localStorage.getItem('whtv_device_id');if(!id){id=crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);localStorage.setItem('whtv_device_id',id)}return id}
+function mergeHistory(a,b){const map=new Map();for(const r of [...(Array.isArray(a)?a:[]),...(Array.isArray(b)?b:[])]){if(!r||!r.id)continue;const old=map.get(r.id);if(!old||Date.parse(r.time||0)>Date.parse(old.time||0))map.set(r.id,r)}return [...map.values()].sort((x,y)=>Date.parse(y.time||0)-Date.parse(x.time||0)).slice(0,500)}
+$('#historySearch').oninput=renderHistory;$('#historyFilter').onchange=renderHistory;
+$('#historyList').onclick=e=>{const b=e.target.closest('[data-history-delete]');if(!b)return;historyRecords=historyRecords.filter(r=>r.id!==b.dataset.historyDelete);saveHistory();renderHistory()};
+$('#clearHistory').onclick=()=>{if(!historyRecords.length)return;if(!confirm(`确定清空本机的 ${historyRecords.length} 条解析历史记录吗？云端历史记录不会因此自动删除。`))return;historyRecords=[];saveHistory();renderHistory()};
+$('#exportHistory').onclick=()=>exportFile('webhometv-parse-history.json',JSON.stringify(historyRecords,null,2),'application/json;charset=utf-8');
+
+// ---------------- 坚果云 WebDAV 加密同步 ----------------
+const SYNC_META='whtv_sync_meta_v1',SYNC_CRED='whtv_sync_cred_v1',SYNC_SALT='whtv_sync_salt_v1',SYNC_BASE='whtv_sync_base_config_v1';
+let syncBusy=false,autoSyncTimer=null;
+function syncStatus(message,kind=''){const el=$('#syncStatus');el.textContent=message;el.className='status sync-status '+kind}
+function syncErrorMessage(e){if(e&&typeof e.message==='string'&&e.message.trim())return e.message.trim();if(e&&e.name)return '操作失败（'+e.name+'），浏览器未提供详细错误信息';if(typeof e==='string'&&e.trim())return e.trim();return '未知错误；请检查浏览器兼容性和本地存储权限'}
+function localConfig(){return {worker:$('#workerUrl').value.trim(),token:$('#workerToken').value,ua:$('#ua').value,referer:$('#referer').value,cookie:$('#cookie').value}}
+function applyConfig(c){if(!c)return;$('#workerUrl').value=c.worker||'';$('#workerToken').value=c.token||'';$('#ua').value=c.ua||'Mozilla/5.0 WebHomeTV-Windows/0.2';$('#referer').value=c.referer||'';$('#cookie').value=c.cookie||'';saveNet()}
+function canonical(v){return JSON.stringify(v,Object.keys(v||{}).sort())}
+async function digestText(v){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(v));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function b64(bytes){let s='';for(const x of new Uint8Array(bytes))s+=String.fromCharCode(x);return btoa(s)}
+function unb64(s){return Uint8Array.from(atob(s),c=>c.charCodeAt(0))}
+async function secureKeyDb(){return new Promise((resolve,reject)=>{const req=indexedDB.open('whtv-secure-sync',1);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('keys'))req.result.createObjectStore('keys')};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error||Error('无法打开本地安全密钥库'))})}
+async function secureKeyGet(id){const db=await secureKeyDb();return new Promise((resolve,reject)=>{const tx=db.transaction('keys','readonly'),r=tx.objectStore('keys').get(id);r.onsuccess=()=>resolve(r.result||null);r.onerror=()=>reject(r.error||Error('读取本地密钥失败'));tx.oncomplete=()=>db.close()})}
+async function secureKeyPut(id,key){const db=await secureKeyDb();return new Promise((resolve,reject)=>{const tx=db.transaction('keys','readwrite');tx.objectStore('keys').put(key,id);tx.oncomplete=()=>{db.close();resolve()};tx.onerror=()=>{db.close();reject(tx.error||Error('保存本地密钥失败'))}})}
+async function deriveSyncKeyFresh(pass,salt){if(!pass)throw Error('此设备尚未解锁同步主密码，请输入同步主密码后再同步');const material=await crypto.subtle.importKey('raw',new TextEncoder().encode(pass),'PBKDF2',false,['deriveKey']);const key=await crypto.subtle.deriveKey({name:'PBKDF2',salt,iterations:250000,hash:'SHA-256'},material,{name:'AES-GCM',length:256},false,['encrypt','decrypt']);await secureKeyPut(b64(salt),key);localStorage.setItem('whtv_sync_key_ready','1');return key}
+async function deriveSyncKey(pass,salt){const id=b64(salt);let key=await secureKeyGet(id);if(key)return key;return deriveSyncKeyFresh(pass,salt)} 
+async function encryptLocalSecret(value,master){let salt=localStorage.getItem(SYNC_SALT);if(!salt){salt=b64(crypto.getRandomValues(new Uint8Array(16)));localStorage.setItem(SYNC_SALT,salt)}const key=await deriveSyncKey(master,unb64(salt)),iv=crypto.getRandomValues(new Uint8Array(12)),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,new TextEncoder().encode(value));return {salt,iv:b64(iv),ciphertext:b64(cipher)}}
+async function decryptLocalSecret(box,master){if(!box)return '';const key=await deriveSyncKey(master,unb64(box.salt));const plain=await crypto.subtle.decrypt({name:'AES-GCM',iv:unb64(box.iv)},key,unb64(box.ciphertext));return new TextDecoder().decode(plain)}
+async function encryptSyncData(data,pass){let salt=localStorage.getItem(SYNC_SALT);if(!salt){salt=b64(crypto.getRandomValues(new Uint8Array(16)));localStorage.setItem(SYNC_SALT,salt)}const saltBytes=unb64(salt),key=await deriveSyncKey(pass,saltBytes),iv=crypto.getRandomValues(new Uint8Array(12)),plain=new TextEncoder().encode(JSON.stringify(data)),cipher=await crypto.subtle.encrypt({name:'AES-GCM',iv},key,plain);return {schema:1,algorithm:'AES-GCM',kdf:'PBKDF2-SHA256',iterations:250000,salt,iv:b64(iv),ciphertext:b64(cipher),updatedAt:new Date().toISOString()}}
+async function decryptSyncData(envelope,pass){if(!envelope||envelope.schema!==1||!envelope.salt||!envelope.iv||!envelope.ciphertext)throw Error('云端同步文件格式不正确');const salt=unb64(envelope.salt),iv=unb64(envelope.iv),cipher=unb64(envelope.ciphertext);let key=await deriveSyncKey(pass,salt),plain;try{plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher)}catch(firstError){try{key=await deriveSyncKeyFresh(pass,salt);plain=await crypto.subtle.decrypt({name:'AES-GCM',iv},key,cipher)}catch(secondError){const detail=secondError&&secondError.name?secondError.name:'解密异常';throw Error('云端数据解密失败（'+detail+'）。请确认手机与电脑使用完全相同的同步主密码；如果密码一致，云端文件可能已损坏或不是由当前同步版本生成。')}}localStorage.setItem(SYNC_SALT,envelope.salt);let data;try{data=JSON.parse(new TextDecoder().decode(plain))}catch(parseError){throw Error('解密成功，但云端同步内容不是有效的数据 JSON')}if(!data||typeof data!=='object')throw Error('云端同步内容结构不正确');return data}
+function normalizeSyncDir(value){
+ const raw=String(value||'WebHomeTV').trim().replace(/^\/+|\/+$/g,'');
+ if(!raw)return 'WebHomeTV';
+ const parts=raw.split('/');
+ if(parts.length>12||parts.some(p=>!p||p==='.'||p==='..'||/[\\\u0000-\u001f\u007f%?#:]/.test(p)||p.length>80))throw Error('坚果云目录格式无效：每级目录不能包含空段、.、..、反斜杠、百分号或特殊控制字符');
+ return parts.join('/');
+}
+function syncCredentials(){return {url:($('#nutstoreUrl').value.trim()||'https://dav.jianguoyun.com/dav/').replace(/\/+$/,'')+'/',user:$('#nutstoreUser').value.trim(),pass:$('#nutstorePass').value,master:$('#syncMaster').value,dir:normalizeSyncDir($('#syncDir').value),file:$('#syncFile').value.trim()||'WebHomeTV-sync-v1.json'}}
+function validSyncInput(){const c=syncCredentials();if(!$('#workerUrl').value.trim())throw Error('请先填写并保存 Cloudflare Worker 地址');if(!$('#workerToken').value.trim())throw Error('请先填写 Worker PROXY_TOKEN');if(!c.user)throw Error('请填写坚果云账号邮箱');if(c.master.length<6&&!localStorage.getItem('whtv_sync_key_ready'))throw Error('首次设置时同步主密码至少需要 6 位，并且电脑和手机必须完全一致');if(!c.pass&&!localStorage.getItem(SYNC_CRED))throw Error('请填写坚果云第三方应用密码');if(!/^[\w.-]+\.json$/i.test(c.file))throw Error('同步文件名仅允许字母、数字、点、下划线和连字符，并以 .json 结尾');return c}
+async function webdavCall(action,payload){const c=validSyncInput(),worker=$('#workerUrl').value.trim().replace(/\/$/,'');const appPassword=c.pass||await decryptLocalSecret(JSON.parse(localStorage.getItem(SYNC_CRED)||'null'),c.master);const r=await fetch(worker+'/sync',{method:'POST',headers:{'Content-Type':'application/json','X-Proxy-Token':$('#workerToken').value.trim()},body:JSON.stringify({action,baseUrl:c.url,username:c.user,appPassword,dir:c.dir,file:c.file,payload})});let j;try{j=await r.json()}catch{throw Error('Worker 返回了非 JSON 响应（HTTP '+r.status+'）')}if(!r.ok||j.ok===false)throw Error(j.error||('HTTP '+r.status));return j}
+async function saveSyncLocal(){const c=syncCredentials();if(!c.user||!c.pass)throw Error('请填写坚果云账号和第三方应用密码');if(c.master.length<6)throw Error('首次保存同步设置时，请设置至少 6 位的同步主密码');const secret=await encryptLocalSecret(c.pass,c.master);localStorage.setItem(SYNC_CRED,JSON.stringify(secret));$('#nutstorePass').value='';localStorage.setItem('whtv_nutstore_url',c.url);localStorage.setItem('whtv_nutstore_user',c.user);localStorage.setItem('whtv_sync_dir',c.dir);localStorage.setItem('whtv_sync_file',c.file);localStorage.setItem('whtv_sync_interval',$('#syncInterval').value);localStorage.setItem('whtv_sync_auto',$('#syncAuto').checked?'1':'0')}
+function loadSyncLocal(){for(const [id,key] of [['nutstoreUrl','whtv_nutstore_url'],['nutstoreUser','whtv_nutstore_user'],['nutstorePass','whtv_nutstore_pass'],['syncDir','whtv_sync_dir'],['syncFile','whtv_sync_file'],['syncInterval','whtv_sync_interval']]){const v=localStorage.getItem(key);if(v!==null)$('#'+id).value=v}$('#syncDir').value=$('#syncDir').value||'WebHomeTV';$('#syncAuto').checked=localStorage.getItem('whtv_sync_auto')!=='0'}
+function getConfigMeta(){try{return JSON.parse(localStorage.getItem(SYNC_META)||'{}')}catch{return {}}}
+function setConfigMeta(v){localStorage.setItem(SYNC_META,JSON.stringify(v))}
+function snapshotData(){return {config:localConfig(),history:historyRecords,configUpdatedAt:getConfigMeta().updatedAt||null,exportedAt:new Date().toISOString(),deviceId:getDeviceId()}}
+async function createEnvelope(){const c=syncCredentials();return encryptSyncData(snapshotData(),c.master)}
+async function readCloud(){const j=await webdavCall('read');if(!j.exists)return null;return j.payload}
+async function writeCloud(envelope){return webdavCall('write',envelope)}
+async function testNutstore(){try{validSyncInput();syncStatus('正在通过 Worker 测试坚果云 WebDAV 授权…');const j=await webdavCall('test');syncStatus('坚果云连接成功。WebDAV 授权有效，可以进行加密文件同步。','good');addHistory('sync','success','坚果云连接测试','WebDAV 授权测试成功')}catch(e){syncStatus('连接测试失败：'+e.message,'bad');addHistory('sync','failed','坚果云连接测试',e.message)}}
+async function uploadOnly(){const c=validSyncInput(),env=await createEnvelope();await writeCloud(env);localStorage.setItem(SYNC_BASE,JSON.stringify(localConfig()));setConfigMeta({updatedAt:new Date().toISOString(),hash:await digestText(JSON.stringify(localConfig()))});syncStatus('上传成功：已将本机网络配置和解析历史加密上传到坚果云。','good');localStorage.setItem('whtv_sync_last',String(Date.now()));addHistory('sync','success','坚果云上传','本机配置与解析历史已加密上传')}
+async function downloadOnly(){validSyncInput();const env=await readCloud();if(!env)throw Error('坚果云中还没有同步文件，请先在已有配置的设备上执行上传');const data=await decryptSyncData(env,syncCredentials().master);if(data.config)applyConfig(data.config);historyRecords=mergeHistory(historyRecords,data.history||[]);saveHistory();renderHistory();localStorage.setItem(SYNC_BASE,JSON.stringify(data.config||{}));setConfigMeta({updatedAt:new Date().toISOString(),hash:await digestText(JSON.stringify(data.config||{}))});syncStatus(`下载成功：已导入网络配置，并合并解析历史（当前 ${historyRecords.length} 条）。`,'good');localStorage.setItem('whtv_sync_last',String(Date.now()))}
+async function bidirectionalSync(){if(syncBusy)return;syncBusy=true;try{const c=validSyncInput();const local=localConfig(),localHash=await digestText(JSON.stringify(local)),baseRaw=localStorage.getItem(SYNC_BASE),base=baseRaw?JSON.parse(baseRaw):null;const env=await readCloud();if(!env){await uploadOnly();return}const cloud=await decryptSyncData(env,c.master),cloudConfig=cloud.config||{},cloudHash=await digestText(JSON.stringify(cloudConfig));const localChanged=!!base&&JSON.stringify(local)!==JSON.stringify(base),cloudChanged=!!base&&JSON.stringify(cloudConfig)!==JSON.stringify(base);let chosen=local;
+  if(!base){if(JSON.stringify(local)!==JSON.stringify(cloudConfig)){const choice=prompt('这是本设备首次建立同步基准，检测到本机与云端配置不同。\n输入 1：使用本机配置并上传\n输入 2：使用云端配置并下载\n取消：暂不处理');if(choice==='1')chosen=local;else if(choice==='2')chosen=cloudConfig;else throw Error('已取消配置冲突处理')}else chosen=local}
+  else if(localChanged&&cloudChanged&&localHash!==cloudHash){const choice=prompt('检测到电脑/手机两端都修改了网络配置，存在冲突。\n输入 1：保留本机配置并上传\n输入 2：采用坚果云配置并覆盖本机\n取消：暂不处理');if(choice==='1')chosen=local;else if(choice==='2')chosen=cloudConfig;else throw Error('已取消配置冲突处理')}
+  else if(cloudChanged&&!localChanged)chosen=cloudConfig;else chosen=local;
+  if(JSON.stringify(chosen)!==JSON.stringify(local))applyConfig(chosen);
+  historyRecords=mergeHistory(historyRecords,cloud.history||[]);saveHistory();renderHistory();
+  const merged={config:chosen,history:historyRecords,configUpdatedAt:new Date().toISOString(),exportedAt:new Date().toISOString(),deviceId:getDeviceId()};const newEnv=await encryptSyncData(merged,c.master);await writeCloud(newEnv);localStorage.setItem(SYNC_BASE,JSON.stringify(chosen));setConfigMeta({updatedAt:new Date().toISOString(),hash:await digestText(JSON.stringify(chosen))});localStorage.setItem('whtv_sync_last',String(Date.now()));syncStatus(`双向同步完成。配置冲突：${localChanged&&cloudChanged&&localHash!==cloudHash?'已按你的选择处理':'未发现'}；解析历史已自动合并，当前 ${historyRecords.length} 条。`,'good');addHistory('sync','success','坚果云双向同步',`历史记录合并后共 ${historyRecords.length} 条`)
+ }catch(e){syncStatus('同步失败或已取消：'+e.message,'bad');addHistory('sync','failed','坚果云双向同步',e.message)}finally{syncBusy=false}}
+function setupAutoSync(){if(autoSyncTimer)clearInterval(autoSyncTimer);if($('#syncAuto').checked){const hours=Math.max(1,Number($('#syncInterval').value)||24);autoSyncTimer=setInterval(()=>{const last=Number(localStorage.getItem('whtv_sync_last')||0);if(Date.now()-last>=hours*3600000&&document.visibilityState==='visible'&&$('#nutstoreUser').value&&localStorage.getItem(SYNC_CRED)&&localStorage.getItem('whtv_sync_key_ready'))bidirectionalSync()},60000);const last=Number(localStorage.getItem('whtv_sync_last')||0);if(Date.now()-last>=hours*3600000&&$('#nutstoreUser').value&&localStorage.getItem(SYNC_CRED)&&localStorage.getItem('whtv_sync_key_ready'))setTimeout(()=>bidirectionalSync(),2500)}}
+$('#testNutstore').onclick=testNutstore;$('#saveSyncSettings').onclick=async()=>{try{await saveSyncLocal();setupAutoSync();syncStatus('同步设置已加密保存在当前设备。请点击“测试坚果云连接”确认账号授权。','good')}catch(e){syncStatus(e.message,'bad')}};
+$('#syncNow').onclick=bidirectionalSync;$('#uploadSync').onclick=async()=>{try{await uploadOnly()}catch(e){syncStatus('上传失败：'+e.message,'bad')}};$('#downloadSync').onclick=async()=>{try{await downloadOnly()}catch(e){const message=syncErrorMessage(e);syncStatus('下载失败：'+message,'bad');addHistory('sync','failed','坚果云下载',message)}};
+$('#syncAuto').onchange=()=>{localStorage.setItem('whtv_sync_auto',$('#syncAuto').checked?'1':'0');setupAutoSync()};$('#syncInterval').onchange=()=>{localStorage.setItem('whtv_sync_interval',$('#syncInterval').value);setupAutoSync()};
+
+$('#manualDownload').onclick=manualDownload;$('#batchDownload').onclick=batchDownload;$('#clearManual').onclick=()=>{$('#manualUrl').value='';$('#manualFilename').value='';downloadStatus('单个下载输入已清空。')};$('#clearBatch').onclick=()=>{$('#batchUrls').value='';$('#downloadProgress').hidden=true;downloadStatus('批量下载列表已清空。')};$('#manualUrl').addEventListener('keydown',e=>{if(e.key==='Enter')manualDownload()});
+$('#fetchUrl').onclick=fetchConfigUrl;$('#parseJson').onclick=parseText;$('#clearAll').onclick=()=>{sites=[];lastConfig=null;configBase='';render();setStatus('已清空站点列表。')};$('#file').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const text=await f.text();$('#jsonInput').value=text;importObject(JSON.parse(text),'')}catch(err){setStatus('文件读取或 JSON 解析失败：'+err.message,'bad')}e.target.value=''};$('#saveNet').onclick=saveNet;$('#testWorker').onclick=testWorker;$('#search').oninput=render;$('#typeFilter').onchange=render;$('#searchFilter').onchange=render;$('#siteList').onclick=e=>{const b=e.target.closest('button[data-act]');if(b)siteAction(Number(b.dataset.i),b.dataset.act)};
+$('#exportJson').onclick=()=>exportFile('webhometv-sites.json',JSON.stringify({sites:sites.map(({__index,__api,...s})=>s)},null,2),'application/json;charset=utf-8');$('#exportCsv').onclick=()=>{const rows=[['name','key','type','typeName','api','searchable','quickSearch','filterable'],...sites.map(s=>[s.name,s.key,s.type,typeOf(s),s.__api||s.api,s.searchable,s.quickSearch,s.filterable])];exportFile('webhometv-sites.csv','\ufeff'+rows.map(r=>r.map(csvCell).join(',')).join('\r\n'),'text/csv;charset=utf-8')};
+$('#loadDemo').onclick=()=>importObject({sites:[{key:'demo_json',name:'示例 JSON API 站点',type:1,api:'https://example.com/api.php',searchable:1,header:{'User-Agent':'Mozilla/5.0 WebHomeTV-Windows/0.2'}},{key:'demo_spider',name:'示例 Spider 站点',type:3,api:'https://example.com/spider.py',searchable:1},{key:'demo_xml',name:'示例 XML API 站点',type:0,api:'https://example.com/xml.php',searchable:0}]},'');
+
+// ---------------- 缓存与本地数据管理 ----------------
+const storageItems = new Map();
+const protectedStorageKeys = new Set([
+  'whtv_worker','whtv_token','whtv_ua','whtv_ref','whtv_cookie'
+]);
+const protectedKeyPattern = /(worker|token|user.?agent|\bua\b|referer|referrer|cookie|auth|secret|password|credential)/i;
+
+function formatBytes(value){
+  if(value===null || value===undefined || !Number.isFinite(Number(value))) return '无法准确估算';
+  const n=Math.max(0,Number(value));
+  if(n<1024) return `${Math.round(n)} B`;
+  if(n<1024*1024) return `${(n/1024).toFixed(1)} KB`;
+  if(n<1024*1024*1024) return `${(n/1024/1024).toFixed(2)} MB`;
+  return `${(n/1024/1024/1024).toFixed(2)} GB`;
+}
+function storageResult(message,kind=''){
+  const el=$('#storageResult');
+  el.textContent=message;
+  el.className='status '+kind;
+}
+function isProtectedKey(key){
+  return protectedStorageKeys.has(String(key)) || protectedKeyPattern.test(String(key));
+}
+function safeJsonSize(value){
+  try{return new Blob([JSON.stringify(value)]).size}catch{return null}
+}
+async function estimateCacheSize(cache){
+  let total=0,unknown=0;
+  const requests=await cache.keys();
+  for(const request of requests){
+    try{
+      const response=await cache.match(request);
+      if(!response){unknown++;continue}
+      if(response.type==='opaque' || response.type==='opaqueredirect'){unknown++;continue}
+      const blob=await response.clone().blob();
+      total+=blob.size;
+    }catch{unknown++}
+  }
+  return {size:unknown && total===0 ? null : total, detail:`${requests.length} 个缓存响应${unknown?`，${unknown} 个无法读取大小`:''}`};
+}
+function estimateLocalStorageSize(storage,key){
+  try{
+    const value=storage.getItem(key);
+    return new Blob([String(key),String(value??'')]).size;
+  }catch{return null}
+}
+function addStorageItem(item){
+  storageItems.set(item.id,item);
+}
+async function estimateDatabase(dbName){
+  return new Promise(resolve=>{
+    let request;
+    try{request=indexedDB.open(dbName)}catch{resolve(null);return}
+    let settled=false;
+    const finish=value=>{if(settled)return;settled=true;try{request.result?.close()}catch{}resolve(value)};
+    request.onerror=()=>finish(null);
+    request.onblocked=()=>finish(null);
+    request.onupgradeneeded=()=>{try{request.transaction.abort()}catch{}finish(null)};
+    request.onsuccess=()=>{
+      const db=request.result;
+      const names=Array.from(db.objectStoreNames||[]);
+      if(!names.length){finish(0);return}
+      let remaining=names.length,total=0,unknown=false;
+      const done=()=>{remaining--;if(remaining<=0)finish(unknown&&total===0?null:total)};
+      for(const storeName of names){
+        try{
+          const tx=db.transaction(storeName,'readonly');
+          const cursorReq=tx.objectStore(storeName).openCursor();
+          cursorReq.onsuccess=()=>{
+            const cursor=cursorReq.result;
+            if(cursor){
+              const amount=safeJsonSize({key:cursor.key,value:cursor.value});
+              if(amount===null)unknown=true;else total+=amount;
+              cursor.continue();
+            }
+          };
+          cursorReq.onerror=()=>{unknown=true;done()};
+          tx.oncomplete=done;
+          tx.onerror=()=>{unknown=true;done()};
+          tx.onabort=()=>{unknown=true;done()};
+        }catch{unknown=true;done()}
+      }
+    };
+  });
+}
+function renderStorageItems(){
+  const root=$('#storageList');
+  const items=Array.from(storageItems.values());
+  if(!items.length){
+    root.innerHTML='<div class="empty">没有检测到可列出的缓存或本地数据。</div>';
+  }else{
+    root.innerHTML=items.map(item=>{
+      const protectedTag=item.protected?'<span class="storage-tag">默认保护</span>':'';
+      const checked=item.selected?'checked':'';
+      return `<label class="storage-item ${item.protected?'protected':''}">
+        <div class="storage-item-main">
+          <input type="checkbox" data-storage-id="${esc(item.id)}" ${checked}>
+          <div style="min-width:0">
+            <div class="storage-item-title">${esc(item.name)}${protectedTag}</div>
+            <div class="storage-item-detail">${esc(item.detail||'')}</div>
+          </div>
+        </div>
+        <div class="storage-item-size">${esc(formatBytes(item.size))}</div>
+      </label>`;
+    }).join('');
+  }
+  const selected=items.filter(x=>x.selected).length;
+  const protectedCount=items.filter(x=>x.protected).length;
+  const totalKnown=items.reduce((sum,x)=>sum+(Number.isFinite(x.size)?x.size:0),0);
+  const unknownCount=items.filter(x=>!Number.isFinite(x.size)).length;
+  $('#storageSummary').innerHTML=
+    `<span>检测到 ${items.length} 项</span><span>已勾选 ${selected} 项</span><span>默认保护 ${protectedCount} 项</span><span>可估算合计 ${formatBytes(totalKnown)}${unknownCount?`（另有 ${unknownCount} 项未知）`:''}</span>`;
+}
+async function scanStorage(){
+  const scanButton=$('#scanStorage');
+  scanButton.disabled=true;
+  storageResult('正在检测当前网站来源的缓存和本地数据…');
+  storageItems.clear();
+  try{
+    if('caches' in window){
+      try{
+        const names=await caches.keys();
+        for(const name of names){
+          let estimate={size:null,detail:'无法读取缓存响应大小'};
+          try{const cache=await caches.open(name);estimate=await estimateCacheSize(cache)}catch{}
+          addStorageItem({
+            id:'cache:'+name,type:'cache',name:'Cache Storage：'+name,
+            detail:estimate.detail+'；删除后可能需要重新联网加载网页资源',
+            size:estimate.size,protected:false,selected:false,
+            remove:async()=>{const ok=await caches.delete(name);if(!ok)throw Error('缓存可能已不存在或无法删除')}
+          });
+        }
+      }catch(e){storageResult('读取 Cache Storage 失败：'+e.message,'bad')}
+    }
+    try{
+      for(let i=0;i<localStorage.length;i++){
+        const key=localStorage.key(i);
+        if(key===null)continue;
+        const protect=isProtectedKey(key);
+        addStorageItem({
+          id:'local:'+key,type:'localStorage',name:'localStorage：'+key,
+          detail:protect?'配置/凭据类数据，默认不勾选；仅在确认后才会删除':'当前来源的本地存储键值',
+          size:estimateLocalStorageSize(localStorage,key),protected:protect,selected:false,
+          remove:async()=>{localStorage.removeItem(key)}
+        });
+      }
+    }catch(e){addStorageItem({id:'local:error',name:'localStorage（无法读取）',detail:e.message,size:null,protected:true,selected:false,remove:null})}
+    try{
+      for(let i=0;i<sessionStorage.length;i++){
+        const key=sessionStorage.key(i);
+        if(key===null)continue;
+        const protect=isProtectedKey(key);
+        addStorageItem({
+          id:'session:'+key,type:'sessionStorage',name:'sessionStorage：'+key,
+          detail:protect?'名称疑似包含配置/凭据，默认不勾选':'当前标签页会话存储键值',
+          size:estimateLocalStorageSize(sessionStorage,key),protected:protect,selected:false,
+          remove:async()=>{sessionStorage.removeItem(key)}
+        });
+      }
+    }catch(e){addStorageItem({id:'session:error',name:'sessionStorage（无法读取）',detail:e.message,size:null,protected:true,selected:false,remove:null})}
+    if(window.indexedDB){
+      if(typeof indexedDB.databases==='function'){
+        try{
+          const dbs=await indexedDB.databases();
+          for(const info of dbs){
+            if(!info.name)continue;
+            const dbName=info.name;
+            const size=await estimateDatabase(dbName);
+            addStorageItem({
+              id:'idb:'+dbName,type:'indexedDB',name:'IndexedDB：'+dbName,
+              detail:'整个数据库将作为一个项目删除；估算值可能不包含 Blob 等复杂对象的实际大小',
+              size,protected:false,selected:false,
+              remove:async()=>await new Promise((resolve,reject)=>{
+                const req=indexedDB.deleteDatabase(dbName);
+                req.onsuccess=()=>resolve();
+                req.onerror=()=>reject(req.error||Error('删除数据库失败'));
+                req.onblocked=()=>reject(Error('数据库仍被其他页面或标签页占用，请关闭相关页面后重试'));
+              })
+            });
+          }
+        }catch(e){storageResult('IndexedDB 检测遇到问题：'+e.message,'bad')}
+      }else{
+        addStorageItem({id:'idb:unsupported',name:'IndexedDB：数据库列表',detail:'当前浏览器不支持 indexedDB.databases()，无法安全枚举数据库；未执行删除',size:null,protected:true,selected:false,remove:null});
+      }
+    }
+    if('serviceWorker' in navigator){
+      try{
+        const regs=await navigator.serviceWorker.getRegistrations();
+        for(let i=0;i<regs.length;i++){
+          const reg=regs[i],scope=reg.scope;
+          addStorageItem({
+            id:'sw:'+scope,type:'serviceWorker',name:'Service Worker：'+scope,
+            detail:'默认保护。注销会关闭该站点的离线缓存与后台能力；通常无需清除',
+            size:null,protected:true,selected:false,
+            remove:async()=>{const ok=await reg.unregister();if(!ok)throw Error('注销未成功或注册已不存在')}
+          });
+        }
+      }catch(e){storageResult('Service Worker 检测遇到问题：'+e.message,'bad')}
+    }
+    renderStorageItems();
+    const count=storageItems.size;
+    storageResult(`检测完成：发现 ${count} 项当前来源数据。所有项目默认未勾选；配置类数据和 Service Worker 默认保护。`,'good');
+  }catch(e){
+    renderStorageItems();
+    storageResult('检测过程中发生错误：'+e.message,'bad');
+  }finally{
+    scanButton.disabled=false;
+  }
+}
+$('#storageList').addEventListener('change',event=>{
+  const input=event.target.closest('input[type="checkbox"][data-storage-id]');
+  if(!input)return;
+  const item=storageItems.get(input.dataset.storageId);
+  if(item){item.selected=input.checked;renderStorageItems()}
+});
+$('#scanStorage').onclick=scanStorage;
+$('#selectAllStorage').onclick=()=>{
+  for(const item of storageItems.values())if(item.remove)item.selected=true;
+  renderStorageItems();
+  storageResult('已全选所有可删除项目，包括默认保护的配置项。请检查项目名称后再执行清除。');
+};
+$('#unselectAllStorage').onclick=()=>{
+  for(const item of storageItems.values())item.selected=false;
+  renderStorageItems();
+  storageResult('已取消全部勾选。');
+};
+$('#clearSelectedStorage').onclick=async()=>{
+  const selected=Array.from(storageItems.values()).filter(item=>item.selected&&typeof item.remove==='function');
+  if(!selected.length){storageResult('请先勾选至少一个可删除项目。','bad');return}
+  const protectedSelected=selected.filter(item=>item.protected);
+  const names=selected.map((item,index)=>`${index+1}. ${item.name}${item.protected?'（默认保护项）':''}`).join('\n');
+  const warning=protectedSelected.length
+    ?`\n\n注意：其中 ${protectedSelected.length} 项属于默认保护的配置/功能数据，删除后可能需要重新填写配置或重新安装离线能力。`
+    :'';
+  if(!confirm(`即将删除以下 ${selected.length} 项数据：\n\n${names}${warning}\n\n此操作不可撤销，确定继续吗？`))return;
+  const button=$('#clearSelectedStorage');
+  button.disabled=true;
+  let success=0,failed=[];
+  storageResult('正在清理所选项目，请不要关闭页面…');
+  for(const item of selected){
+    try{await item.remove();success++}
+    catch(error){failed.push(`${item.name}：${error.message||error}`)}
+  }
+  try{await scanStorage()}catch{}
+  const remaining=Array.from(storageItems.values()).filter(item=>item.selected).length;
+  const message=`清理完成：成功 ${success} 项，失败 ${failed.length} 项。已自动重新检测。${failed.length?'\n失败详情：\n'+failed.join('\n'):'\n未发现删除失败项目。'}`;
+  storageResult(message,failed.length?'bad':'good');
+  button.disabled=false;
+};
+
+let deferredInstall=null;const installButton=$('#installApp');const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+if(isIOS&&!window.matchMedia('(display-mode: standalone)').matches)installButton.hidden=false;
+window.addEventListener('beforeinstallprompt',event=>{event.preventDefault();deferredInstall=event;installButton.hidden=false});
+window.addEventListener('appinstalled',()=>{deferredInstall=null;installButton.hidden=true;setStatus('应用已安装，可以从手机桌面启动。','good')});
+installButton.onclick=async()=>{if(deferredInstall){deferredInstall.prompt();const choice=await deferredInstall.userChoice;setStatus(choice.outcome==='accepted'?'已接受安装请求。':'已取消安装。',choice.outcome==='accepted'?'good':'');deferredInstall=null;installButton.hidden=true;return}
+if(isIOS){$('#installHelp').open=true;$('#installHelp').scrollIntoView({behavior:'smooth',block:'center'});return}setStatus('请打开浏览器菜单，选择“安装应用”或“添加到主屏幕”。')};
+if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(err=>console.warn('Service Worker 注册失败：',err)));
+loadNet();readHistory();renderHistory();loadSyncLocal();setupAutoSync();
+})();
+</script></body></html>
